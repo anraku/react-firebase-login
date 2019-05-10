@@ -1,51 +1,60 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import firebase from '../config/index';
 
-import LoginComponent, { LoginProps } from '../components/Login';
 import { AuthState, changeStatus } from '../reducers/auth';
 import { ApplicationState } from '../reducers/index';
+import LoginComponent from '../components/Login';
 
 const mapStateToProps = (state: ApplicationState): AuthState => ({
   loginUser: state.auth.loginUser,
 });
 
-interface DispatchProps {
-  changeAuthStatus: (user: firebase.User) => void;
+export interface DispatchProps {
+  changeAuthStatus: (user: firebase.User | null) => void;
+  handleLogout: () => void;
+  handleLogin: () => void;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  changeAuthStatus: (user: firebase.User) => dispatch(changeStatus(user)),
+  changeAuthStatus: (user: firebase.User | null) =>
+    dispatch(changeStatus(user)),
+  handleLogout: () => {
+    firebase.auth().signOut();
+    dispatch(changeStatus(null));
+  },
+  handleLogin: () => {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithRedirect(provider);
+    } else {
+      dispatch(changeStatus(firebase.auth().currentUser));
+    }
+  },
 });
 
-// const login = (): void => {
-//   const provider = new firebase.auth.GoogleAuthProvider();
-//   firebase.auth().signInWithRedirect(provider);
-// };
-
-// const logout = (): void => {
-//   firebase.auth().signOut();
-// };
-
-type EnhancedAuthProps = LoginProps & DispatchProps;
-
-const LoginContainer: FC<EnhancedAuthProps> = ({
-  loginUser = null,
+const LoginContainer: FC<AuthState & DispatchProps> = ({
+  loginUser,
   changeAuthStatus,
+  handleLogin,
+  handleLogout,
 }) => {
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        changeAuthStatus(user);
-      }
-    });
-  }, [loginUser]);
+  firebase.auth().onAuthStateChanged(user => {
+    changeAuthStatus(user);
+  });
 
-  return <LoginComponent loginUser={loginUser} />;
+  return (
+    <LoginComponent
+      loginUser={loginUser}
+      handleLogin={handleLogin}
+      handleLogout={handleLogout}
+    />
+  );
 };
 
-export const Login = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(LoginContainer);

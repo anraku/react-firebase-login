@@ -4,7 +4,7 @@ import firebase from '../config/index';
 export const CHANGE_STATUS = 'USER/CHANGE_STATUS';
 export const TEST = 'USER/TEST';
 
-export const changeStatus = (user: firebase.User) => ({
+export const changeStatus = (user: firebase.User | null) => ({
   type: CHANGE_STATUS as typeof CHANGE_STATUS,
   user,
 });
@@ -12,7 +12,7 @@ export const changeStatus = (user: firebase.User) => ({
 export type AuthAction = ReturnType<typeof changeStatus>;
 
 export interface AuthState {
-  loginUser: firebase.User | null;
+  loginUser?: firebase.User | null;
 }
 
 const initialState: AuthState = {
