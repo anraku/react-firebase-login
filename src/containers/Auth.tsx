@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   },
 });
 
-const LoginContainer: FC<AuthState & DispatchProps> = ({
+const AuthContainer: FC<AuthState & DispatchProps> = ({
   loginUser,
   dispatchAuthStatus,
   handleLogin,
@@ -57,4 +57,4 @@ const LoginContainer: FC<AuthState & DispatchProps> = ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(LoginContainer);
+)(AuthContainer);
