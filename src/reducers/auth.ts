@@ -1,15 +1,14 @@
 import { Reducer } from 'redux';
 import firebase from '../config/index';
 
-export const CHANGE_STATUS = 'USER/CHANGE_STATUS';
-export const TEST = 'USER/TEST';
+export const CHANGE_AUTH_STATUS = 'USER/CHANGE_AUTH_STATUS';
 
-export const changeStatus = (user: firebase.User | null) => ({
-  type: CHANGE_STATUS as typeof CHANGE_STATUS,
+export const changeAuthStatus = (user: firebase.User | null) => ({
+  type: CHANGE_AUTH_STATUS as typeof CHANGE_AUTH_STATUS,
   user,
 });
 
-export type AuthAction = ReturnType<typeof changeStatus>;
+export type AuthAction = ReturnType<typeof changeAuthStatus>;
 
 export interface AuthState {
   loginUser?: firebase.User | null;
@@ -24,7 +23,7 @@ const auth: Reducer<AuthState, AuthAction> = (
   action: AuthAction,
 ) => {
   switch (action.type) {
-    case CHANGE_STATUS:
+    case CHANGE_AUTH_STATUS:
       return {
         ...state,
         loginUser: action.user,

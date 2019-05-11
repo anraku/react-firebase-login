@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import firebase from '../config/index';
 
-interface LoginProps {
+interface AuthProps {
   loginUser?: firebase.User | null;
   handleLogin?: () => void;
   handleLogout?: () => void;
 }
 
-const LoginComponent: FC<LoginProps> = props => {
+const AuthComponent: FC<AuthProps> = props => {
   const { loginUser, handleLogin, handleLogout } = props;
 
   return (
@@ -31,4 +31,4 @@ const LoginComponent: FC<LoginProps> = props => {
   );
 };
 
-export default LoginComponent;
+export default AuthComponent;

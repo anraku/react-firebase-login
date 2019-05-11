@@ -3,26 +3,26 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import firebase from '../config/index';
 
-import { AuthState, changeStatus } from '../reducers/auth';
+import { AuthState, changeAuthStatus } from '../reducers/auth';
 import { ApplicationState } from '../reducers/index';
-import LoginComponent from '../components/Login';
+import AuthComponent from '../components/Auth';
 
 const mapStateToProps = (state: ApplicationState): AuthState => ({
   loginUser: state.auth.loginUser,
 });
 
 export interface DispatchProps {
-  changeAuthStatus: (user: firebase.User | null) => void;
+  dispatchAuthStatus: (user: firebase.User | null) => void;
   handleLogout: () => void;
   handleLogin: () => void;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  changeAuthStatus: (user: firebase.User | null) =>
-    dispatch(changeStatus(user)),
+  dispatchAuthStatus: (user: firebase.User | null) =>
+    dispatch(changeAuthStatus(user)),
   handleLogout: () => {
     firebase.auth().signOut();
-    dispatch(changeStatus(null));
+    dispatch(changeAuthStatus(null));
   },
   handleLogin: () => {
     const user = firebase.auth().currentUser;
@@ -30,23 +30,23 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithRedirect(provider);
     } else {
-      dispatch(changeStatus(firebase.auth().currentUser));
+      dispatch(changeAuthStatus(firebase.auth().currentUser));
     }
   },
 });
 
 const LoginContainer: FC<AuthState & DispatchProps> = ({
   loginUser,
-  changeAuthStatus,
+  dispatchAuthStatus,
   handleLogin,
   handleLogout,
 }) => {
   firebase.auth().onAuthStateChanged(user => {
-    changeAuthStatus(user);
+    dispatchAuthStatus(user);
   });
 
   return (
-    <LoginComponent
+    <AuthComponent
       loginUser={loginUser}
       handleLogin={handleLogin}
       handleLogout={handleLogout}
