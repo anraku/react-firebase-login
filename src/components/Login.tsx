@@ -12,13 +12,21 @@ const LoginComponent: FC<LoginProps> = props => {
 
   return (
     <>
-      <p>{loginUser ? loginUser.displayName : 'guest'}さんこんにちは</p>
-      <button type="button" onClick={handleLogout}>
-        Google Logout
-      </button>
-      <button type="button" onClick={handleLogin}>
-        Google Login
-      </button>
+      {loginUser ? (
+        <>
+          <p>{loginUser.displayName}さんこんにちは</p>
+          <button type="button" onClick={handleLogout}>
+            Google Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <p>guestさんこんにちは</p>
+          <button type="button" onClick={handleLogin}>
+            Google Login
+          </button>
+        </>
+      )}
     </>
   );
 };
